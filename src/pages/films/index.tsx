@@ -44,7 +44,7 @@ export default function Films({data, title}:Props) {
     useEffect(()=>{
         dispatch(getFilms({searchValue, currentPage}))
     }, [currentPage])
-    const onSearch = (event:ChangeEvent<HTMLButtonElement>) => {
+    const onSearch = (event:any) => {
         event.preventDefault()
         if(searchValue.trim() === "") {
             alert("Search field is empty")
