@@ -5,7 +5,7 @@ import axios from "axios";
 import {IFilm} from "@/types";
 import {API_KEY} from "@/utils";
 import {TextField, Button, Skeleton} from "@mui/material";
-import {useEffect} from "react";
+import {ChangeEvent, useEffect, useRef} from "react";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks";
 import {getFilms, setCurrentPage, setDefaultFilms, setSearchValue} from "@/redux/filmsSlice";
 import styles from './styles.module.scss'
@@ -39,10 +39,13 @@ export default function Films({data, title}:Props) {
     const currentPage = useAppSelector(state=>state.films.currentPage)
     const films = useAppSelector(state=>state.films.data)
     const isLoading = useAppSelector(state=>state.films.isLoading)
+    const searchRef = useRef(null)
+
     useEffect(()=>{
         dispatch(getFilms({searchValue, currentPage}))
     }, [currentPage])
-    const onSearch = () => {
+    const onSearch = (event:ChangeEvent<HTMLButtonElement>) => {
+        event.preventDefault()
         if(searchValue.trim() === "") {
             alert("Search field is empty")
             return 0
@@ -63,11 +66,11 @@ export default function Films({data, title}:Props) {
         />
     </Head>
     <div className={styles.wrapper}>
-        <div className={styles.search}>
+        <form className={styles.search}>
             <TextField
                 sx={{".css-1d3z3hw-MuiOutlinedInput-notchedOutline":{borderColor:"#1976d2", color:"#1976d2"}, ".css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input":{color:"#1976d2"}, ".css-14lo706>span":{color:"#1976d2"}, ".css-1jy569b-MuiFormLabel-root-MuiInputLabel-root":{color:"#1976d2"}, ".css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root":{color:"#1976d2"} }} className={styles.searchField} onChange={(event) => dispatch(setSearchValue(event.target.value))} value={searchValue} label="Search Film" variant="outlined" />
-            <Button sx={{height:"7ch", width:"10ch"}} disabled={searchValue.trim() === ""} onClick={onSearch} variant="outlined">Search</Button>
-        </div>
+            <Button type="submit" sx={{height:"7ch", width:"10ch"}} disabled={searchValue.trim() === ""} onClick={(e)=>onSearch(e)} variant="outlined">Search</Button>
+        </form>
         <div className={styles.films}>
             {
                 isLoading === "loading" ?
